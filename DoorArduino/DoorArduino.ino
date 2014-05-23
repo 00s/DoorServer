@@ -20,14 +20,10 @@ void loop() {
     // the controller to get the ASCII value for the character.  For
     // example 'a' = 97, 'b' = 98, and so forth:
 
-if(inByte == 'a'){
-  int i = 0;
-  while(i <5){
-      digitalWrite(PIN, HIGH);
-      delay(10);
-      digitalWrite(PIN, LOW);
+     if(inByte == 'a'){
+        digitalWrite(PIN, HIGH);
+        delay(100);
+        digitalWrite(PIN, LOW);
     }
-    i = i+1;
-  }
   }
 }

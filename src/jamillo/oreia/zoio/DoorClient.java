@@ -35,22 +35,27 @@ public class DoorClient implements Runnable {
 					return;
 
 				String tokens[] = mensagem.split(":");
-
+				
 				if (tokens.length == 2) {
 
-					if (DoorUsers.getInstance().authenticate(tokens[0],
-							tokens[1])) {
-						try {
-							DoorArduino.getInstance().open();
-							out.writeBytes("OK\n");
-						} catch (DoorNotOppennedException e) {
-							out.writeBytes("FAIL\n");
-							System.out.println("FAIL");
-						}
+					String nome = tokens[0];
+					String senha = tokens[1];
+					
+					if (DoorUsers.getInstance().authenticate(nome,
+							senha)) {
+						if(CurrentTime.getHour() < 7 || CurrentTime.getHour() >= 22)
+							out.writeBytes(nome);
+							try {
+								DoorArduino.getInstance().open();
+								out.writeBytes(Message.saudacao(nome));
+							} catch (DoorNotOppennedException e) {
+								out.writeBytes("A porta não pode ser aberta no momento\n");
+								System.out.println("FAIL");
+							}
 
 					} else {
 						System.out.println("Senha inválida");
-						out.writeBytes("NOK\n");
+						out.writeBytes("Usuário ou senha inválido(a)\n");
 						System.out.println("NOK");
 					}
 				} else {
