@@ -1,5 +1,7 @@
 package jamillo.oreia.zoio;
 
+import jamillo.oreia.zoio.serialcomunication.ArduinoDoorController;
+
 import java.awt.Image;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
@@ -10,11 +12,13 @@ import java.awt.event.ActionListener;
 import java.net.URL;
 
 import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
 public class Main {
 	
 	public static void main(String[] args) throws Exception{
 		
+		new ArduinoDoorController().run();
+		
+		System.out.println("Started");
 		
 		if (SystemTray.isSupported()) {
             System.out.println("SystemTray is not supported");
@@ -37,6 +41,10 @@ public class Main {
 		}
         
 		new DoorServer(25678).run();
+		
+		
+	
+		
 	}
 	
 	

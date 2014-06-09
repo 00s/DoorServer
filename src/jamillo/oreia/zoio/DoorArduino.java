@@ -1,7 +1,6 @@
 package jamillo.oreia.zoio;
 
 import jamillo.oreia.zoio.exception.DoorNotOppennedException;
-import jamillo.oreia.zoio.serialcomunication.Arduino;
 import jamillo.oreia.zoio.serialcomunication.ArduinoDoorController;
 
 public class DoorArduino {
