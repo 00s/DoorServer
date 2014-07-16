@@ -16,9 +16,9 @@ public class Main {
 	
 	public static void main(String[] args) throws Exception{
 		
+		System.out.println("Started");
 		new ArduinoDoorController().run();
 		
-		System.out.println("Started");
 		
 		if (SystemTray.isSupported()) {
             System.out.println("SystemTray is not supported");
@@ -41,10 +41,7 @@ public class Main {
 		}
         
 		new DoorServer(25678).run();
-		
-		
-	
-		
+
 	}
 	
 	
