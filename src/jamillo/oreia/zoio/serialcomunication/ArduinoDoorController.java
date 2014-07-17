@@ -22,6 +22,9 @@ public class ArduinoDoorController implements SerialPortEventListener, Runnable{
 	* converting the bytes into characters 
 	* making the displayed results codepage independent
 	*/
+	
+	private boolean isRegisteringNewTag = false;
+	
 	private BufferedReader input;
 	/** The output stream to the port */
 	private OutputStream output;
@@ -113,30 +116,28 @@ public class ArduinoDoorController implements SerialPortEventListener, Runnable{
 		            
 		            if(!inputLine.contains("Tag")){
 		            	System.out.println(inputLine);
-		            	if(isValid(inputLine)){
+		            	
+		            	if(isRegisteringNewTag){
+
+		            		if(removable(inputLine)){
+		            			System.out.println("remover item");
+		            			enviaDados(98);
+		            			isRegisteringNewTag = false;
+		            			break;
+		            		}
+		            		tags.add(inputLine);
+		            		isRegisteringNewTag = false;
+		            		enviaDados(97);
+
+		            	}else if(isValid(inputLine)){
 		            		enviaDados(97);
 		            		System.out.println("Acesso liberado ");
 		            	}else if(isMasterKey(inputLine)){
 		            		//TODO cadastrar nova tag
 		            		enviaDados(99);
 		            		System.out.println("Master Key");
-		            		while(oEvent.getEventType() != SerialPortEvent.DATA_AVAILABLE) {
-		            			
-		            			
-		            		    try {
-		            		        String newCardInputLine=null;
-		            		        while (input.ready()) {
-		            		        	newCardInputLine = input.readLine();
-		            		            
-		            		            if(!inputLine.contains("Tag")){
-		            		            	tags.add(inputLine);
-		            		            	System.out.println("Tag cadastrada: "+ newCardInputLine);
-		            		            }
-		            		        }
-	            		        }catch(Exception e){
-	            		        	e.printStackTrace();
-	            		        }
-	            		    }
+		            		isRegisteringNewTag = true;
+		            		
 
 		            	}else{
 		            		enviaDados(98);
@@ -166,6 +167,17 @@ public class ArduinoDoorController implements SerialPortEventListener, Runnable{
 		return false;
 	}
 
+	private boolean removable(String uid){
+		for(int i = 0; i < tags.size(); i++){
+			System.out.println("TAGGGGGG ====> " + tags.get(i));
+			if(uid.contains(tags.get(i))){
+				tags.remove(i);
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	@Override
 	public void run() {
 	}
