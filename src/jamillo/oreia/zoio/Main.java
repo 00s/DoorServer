@@ -17,7 +17,11 @@ public class Main {
 	public static void main(String[] args) throws Exception{
 		
 		System.out.println("Started");
+<<<<<<< HEAD
 		new ArduinoDoorController().run();
+=======
+		new ArduinoDoorController();
+>>>>>>> 733d43eecb41a6527f9b68400b24c8cb06360f86
 		
 		
 		/*if (SystemTray.isSupported()) {
@@ -40,7 +44,11 @@ public class Main {
     		tray.add(trayIcon);
 		}
         
+<<<<<<< HEAD
 		new DoorServer(25678).run();*/
+=======
+		new DoorServer(25678).run();
+>>>>>>> 733d43eecb41a6527f9b68400b24c8cb06360f86
 
 	}
 	

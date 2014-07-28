@@ -16,19 +16,27 @@ import java.util.List;
 public class ArduinoDoorController implements SerialPortEventListener, Runnable{
 	private OutputStream serialInOut;
 	private SerialPort serialPort;
+<<<<<<< HEAD
 	private List<String> tags = new LinkedList<String>();
 	private static final String MASTER_KEY = "UID BA 32 68 A1";
 	
+=======
+
+>>>>>>> 733d43eecb41a6527f9b68400b24c8cb06360f86
 	/**
 	* A BufferedReader which will be fed by a InputStreamReader 
 	* converting the bytes into characters 
 	* making the displayed results codepage independent
 	*/
+	
+	private boolean isRegisteringNewTag = false;
+	
 	private BufferedReader input;
 	/** The output stream to the port */
 	private OutputStream output;
 	/** Milliseconds to block while waiting for port open */
 	private static final int TIME_OUT = 2000;
+	private static final CharSequence MASTER_KEY = "0A 14 68 A1";
 	/** Default bits per second for COM port. */
 	private final int DATA_RATE = 9600;
 	
@@ -99,6 +107,10 @@ public class ArduinoDoorController implements SerialPortEventListener, Runnable{
 	public void enviaDados(int opcao) {
 		try {
 			serialInOut.write(opcao);// escreve o valor de opcao na porta serial
+<<<<<<< HEAD
+=======
+			serialInOut.flush();
+>>>>>>> 733d43eecb41a6527f9b68400b24c8cb06360f86
 			System.out.println("opcao = " + opcao + " enviada.\n");
 		} catch (IOException ex) {
 			System.out.println("Não foi possível enviar o dado. ");
@@ -110,8 +122,9 @@ public class ArduinoDoorController implements SerialPortEventListener, Runnable{
 		 if (oEvent.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
 		    try {
 		        String inputLine=null;
-		        if (input.ready()) {
+		        while (input.ready()) {
 		            inputLine = input.readLine();
+<<<<<<< HEAD
 		            //TODO ler infos da tag, validar e permitir acesso
 		            
 		            if(inputLine.contains(MASTER_KEY)){
@@ -122,6 +135,39 @@ public class ArduinoDoorController implements SerialPortEventListener, Runnable{
 		            	
 		            }
 		            System.out.println(inputLine);
+=======
+		            
+		            if(!inputLine.contains("Tag") && inputLine.length() == 11){
+		            	System.out.println(inputLine);
+		            	
+		            	if(isRegisteringNewTag && !inputLine.contains(MASTER_KEY)){
+
+		            		if(removable(inputLine)){
+		            			System.out.println("remover item");
+		            			enviaDados(98);
+		            			isRegisteringNewTag = false;
+		            			break;
+		            		}
+		            		tags.add(inputLine);
+		            		isRegisteringNewTag = false;
+		            		enviaDados(97);
+
+		            	}else if(isMasterKey(inputLine)){
+		            		//TODO cadastrar nova tag
+		            		enviaDados(99);
+		            		System.out.println("Master Key");
+		            		isRegisteringNewTag = !isRegisteringNewTag;
+		            	}else if(isValid(inputLine)){
+		            		enviaDados(97);
+		            		System.out.println("Acesso liberado ");
+		            		
+
+		            	}else{
+		            		enviaDados(98);
+		            		System.out.println("Acesso negado");
+		            	}
+		            }
+>>>>>>> 733d43eecb41a6527f9b68400b24c8cb06360f86
 		        }
 		    } catch (Exception e) {
 		        System.err.println(e.toString());
@@ -129,14 +175,43 @@ public class ArduinoDoorController implements SerialPortEventListener, Runnable{
 		 }
 		// Ignore all the other eventTypes, but you should consider the other ones.
 		}
+	private boolean isMasterKey(String inputLine) {
+		if(inputLine.contains(MASTER_KEY))
+			return true;
+		return false;
+	}
+	
+	
+	private List<String> tags = new LinkedList<String>();
+	private boolean isValid(String uid){
+		for(String tag : tags){
+			if(uid.contains(tag))
+				return true;
+		}
+		return false;
+	}
 
+	private boolean removable(String uid){
+		for(int i = 0; i < tags.size(); i++){
+			System.out.println("TAGGGGGG ====> " + tags.get(i));
+			if(uid.contains(tags.get(i))){
+				tags.remove(i);
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	@Override
 	public void run() {
+<<<<<<< HEAD
 		// TODO Auto-generated method stub
 		//try {Thread.sleep(1000000);} catch (InterruptedException ie) {}
 	}
 	
 	private String getUID(String content){
 		return content.split("UID")[1];
+=======
+>>>>>>> 733d43eecb41a6527f9b68400b24c8cb06360f86
 	}
 }

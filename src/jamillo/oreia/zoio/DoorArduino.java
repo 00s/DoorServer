@@ -10,7 +10,10 @@ public class DoorArduino {
 	private DoorArduino() {
 
 	}
-
+	/**
+	 * Singleton
+	 * @return
+	 */
 	public static DoorArduino getInstance() {
 		if (da != null)
 			return da;
