@@ -16,11 +16,11 @@ public class Main {
 	
 	public static void main(String[] args) throws Exception{
 		
+		System.out.println("Started");
 		new ArduinoDoorController().run();
 		
-		System.out.println("Started");
 		
-		if (SystemTray.isSupported()) {
+		/*if (SystemTray.isSupported()) {
             System.out.println("SystemTray is not supported");
             final PopupMenu popup = new PopupMenu();
             final TrayIcon trayIcon =
@@ -40,11 +40,8 @@ public class Main {
     		tray.add(trayIcon);
 		}
         
-		new DoorServer(25678).run();
-		
-		
-	
-		
+		new DoorServer(25678).run();*/
+
 	}
 	
 	

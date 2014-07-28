@@ -10,18 +10,15 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.LinkedList;
+import java.util.List;
 
 public class ArduinoDoorController implements SerialPortEventListener, Runnable{
 	private OutputStream serialInOut;
 	private SerialPort serialPort;
+	private List<String> tags = new LinkedList<String>();
+	private static final String MASTER_KEY = "UID BA 32 68 A1";
 	
-	private static final String PORT_NAMES[] = { 
-		"/dev/tty.usbserial-A9007UX1",	   // Mac OS X
-        "/dev/ttyACM0",					  // Raspberry Pi
-		"/dev/ttyUSB0", 				 // Linux
-		"COM7", 						// Windows
-};
-
 	/**
 	* A BufferedReader which will be fed by a InputStreamReader 
 	* converting the bytes into characters 
@@ -40,6 +37,8 @@ public class ArduinoDoorController implements SerialPortEventListener, Runnable{
 	public ArduinoDoorController() {
 		//TODO verificar necessidade do construtor
 		this.initialize();
+		tags.add(MASTER_KEY);
+		
 	}
 
 	/**
@@ -99,28 +98,31 @@ public class ArduinoDoorController implements SerialPortEventListener, Runnable{
 	 */
 	public void enviaDados(int opcao) {
 		try {
-			serialInOut.write(opcao);// escreve o valor na porta serial para ser
-									// enviado
+			serialInOut.write(opcao);// escreve o valor de opcao na porta serial
+			System.out.println("opcao = " + opcao + " enviada.\n");
 		} catch (IOException ex) {
 			System.out.println("Não foi possível enviar o dado. ");
 		}
 	}
-	
-	public void recebeDados(){
-		
-	}
 
 	@Override
-	public synchronized void serialEvent(SerialPortEvent oEvent) {
+	public void serialEvent(SerialPortEvent oEvent) {
 		 if (oEvent.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
 		    try {
 		        String inputLine=null;
 		        if (input.ready()) {
 		            inputLine = input.readLine();
 		            //TODO ler infos da tag, validar e permitir acesso
+		            
+		            if(inputLine.contains(MASTER_KEY)){
+		            	//TODO Entrar em modo de cadastro
+		            }else if(tags.contains(getUID(inputLine))){
+		            	enviaDados(97);
+		            	System.out.println(inputLine.split("UID")[1]);
+		            	
+		            }
 		            System.out.println(inputLine);
 		        }
-
 		    } catch (Exception e) {
 		        System.err.println(e.toString());
 		    }
@@ -131,6 +133,10 @@ public class ArduinoDoorController implements SerialPortEventListener, Runnable{
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-		try {Thread.sleep(1000000);} catch (InterruptedException ie) {}
+		//try {Thread.sleep(1000000);} catch (InterruptedException ie) {}
+	}
+	
+	private String getUID(String content){
+		return content.split("UID")[1];
 	}
 }
